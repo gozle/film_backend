@@ -18,7 +18,7 @@ export class Subscription extends Model {
 
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column(DataType.STRING)
     id!: number;
 
     @ForeignKey(() => User)

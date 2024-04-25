@@ -18,7 +18,7 @@ export class Country extends Model {
 
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column(DataType.BIGINT)
     id!: number;
 
     @Column(DataType.STRING)

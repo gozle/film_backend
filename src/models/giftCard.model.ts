@@ -7,6 +7,7 @@ import {
     DataType,
     BelongsTo,
     ForeignKey,
+    Unique,
 } from 'sequelize-typescript';
 import { PremiumPlan } from './premiumPlans.model';
 
@@ -17,14 +18,15 @@ export class GiftCard extends Model {
 
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column(DataType.BIGINT)
     id!: number;
 
-    @Column(DataType.STRING)
+    @Unique
+    @Column({ type: DataType.STRING, allowNull: false, })
     code: string;
 
-    @Column(DataType.INTEGER)
-    duration: number;
+    // @Column(DataType.INTEGER)
+    // duration: number;
 
     @Column({
         type: DataType.STRING,
@@ -33,7 +35,7 @@ export class GiftCard extends Model {
     is_active: boolean;
 
     @BelongsTo(() => PremiumPlan)
-    premiumPlan: number;
+    premiumPlan: PremiumPlan;
 
     @ForeignKey(() => PremiumPlan)
     @Column({ type: DataType.BIGINT })

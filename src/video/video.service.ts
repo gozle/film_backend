@@ -11,9 +11,9 @@ export class VideoService {
 
 
 
-  create(createVideoDto: CreateVideoDto) {
+  create(data: CreateVideoDto) {
 
-
+    console.log(data)
 
 
 

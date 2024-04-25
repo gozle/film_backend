@@ -1,0 +1,29 @@
+URL=http://192.168.12.152    #URL is required in the link sent to email
+PORT=8000                    #Port number of app
+
+#DB options
+DB_USERNAME=
+DB_PASSWORD=
+DB_DATABASE=
+DB_HOST=
+DB_PORT=
+DB_DIALECT=
+DB_LOGGING=
+
+
+#Email Options
+
+EMAIL_USERNAME=
+EMAIL_PASSWORD=
+EMAIL_HOST=
+EMAIL_PORT=
+
+
+#jwt secrets
+
+REFRESH_SECRET=
+ACCESS_SECRET=
+EMAIL_VER_SECRET=
+
+
+

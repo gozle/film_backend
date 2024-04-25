@@ -14,6 +14,8 @@ import { CountryVideo } from 'src/models/coutryVideo.model';
 import { Rating } from 'src/models/rating.model';
 import { Category } from 'src/models/category.model';
 import { PremiumPlan, } from 'src/models/premiumPlans.model';
+import { Admin } from 'src/models/admin.model';
+import { GiftCard } from 'src/models/giftCard.model';
 
 
 const config: IDatabaseConfigAttributes = dataBaseConfig.dev;
@@ -37,6 +39,8 @@ export const databaseProviders = [
         CountryVideo,
         Rating,
         Category,
+        Admin,
+        GiftCard,
         PremiumPlan
 
       ]);

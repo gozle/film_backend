@@ -20,6 +20,9 @@ export class Sound extends Model {
     @Column(DataType.BIGINT)
     id!: number;
 
+    @Column(DataType.STRING)
+    language: string;
+
     @Column(DataType.TEXT)
     sound_path: string;
 

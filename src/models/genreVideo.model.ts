@@ -15,7 +15,7 @@ import { Genre } from './genre.model';
 export class GenreVideo extends Model {
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column(DataType.BIGINT)
     id!: number;
 
     @ForeignKey(() => Video)

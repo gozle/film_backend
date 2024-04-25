@@ -16,7 +16,7 @@ export class CountryVideo extends Model {
 
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column(DataType.BIGINT)
     id!: number;
 
     @ForeignKey(() => Video)

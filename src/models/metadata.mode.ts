@@ -12,6 +12,7 @@ import {
 
 @Table
 export class Metadata extends Model {
+
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.BIGINT)
@@ -31,7 +32,7 @@ export class Metadata extends Model {
     slug: string;
 
     @Column(DataType.STRING)
-    restrictionAge: string;
+    age_restriction: string;
 
 
 

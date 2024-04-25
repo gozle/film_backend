@@ -15,7 +15,7 @@ import { Actor } from './actor.model';
 export class ActorVideo extends Model {
     @AutoIncrement
     @PrimaryKey
-    @Column
+    @Column(DataType.BIGINT)
     id!: number;
 
     @ForeignKey(() => Video)
