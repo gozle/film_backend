@@ -3,7 +3,9 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createAdmin } from './util/createAdmin'
 import { ValidationPipe } from '@nestjs/common';
-
+import { join } from 'path';
+import * as express from "express";
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 const PORT = process.env.PORT || 8000
 const URL = process.env.URL || 'localhost';
@@ -23,7 +25,9 @@ const config = new DocumentBuilder()
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   const document = SwaggerModule.createDocument(app, config);
   app.useGlobalPipes(new ValidationPipe());
   SwaggerModule.setup('swagger', app, document);

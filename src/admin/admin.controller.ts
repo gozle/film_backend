@@ -2,17 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @ApiTags("admin")
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiHeader({ name: "access_token" })
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) { }
 
-  @Post()
+
+  @Post('add')
+  @ApiConsumes()
+
   create(@Body() createAdminDto: CreateAdminDto) {
     return this.adminService.create(createAdminDto);
   }

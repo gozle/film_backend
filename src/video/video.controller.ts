@@ -33,6 +33,38 @@ const multerOptions: {} = {
 @Controller('video')
 export class VideoController {
   constructor(private readonly videoService: VideoService) { }
+  @ApiOperation({
+    summary: 'Video upload',
+    description:
+      'video upload',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+
+        video_path: {
+          type: "file"
+        },
+      },
+    },
+  })
+  @Post()
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }], multerOptions),
+  )
+  uploadVideo(@Body() createVideoDto: CreateVideoDto) {
+    return this.videoService.create(createVideoDto);
+  }
+
+
+
 
   @ApiOperation({
     summary: 'Video upload',
@@ -118,6 +150,9 @@ export class VideoController {
   create(@Body() createVideoDto: CreateVideoDto) {
     return this.videoService.create(createVideoDto);
   }
+
+
+
 
   @Get()
   findAll() {

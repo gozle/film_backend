@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFiles, UseInterceptors, BadRequestException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UploadedFiles, UseInterceptors, BadRequestException, UseGuards, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody, ApiConsumes, ApiHeader, ApiOperation, ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import multer, { diskStorage } from 'multer';
 import * as CONSTANTS from "./user.constants"
@@ -29,7 +29,7 @@ const multerOptions: {} = {
 
 
 @ApiTags('user')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiHeader({ name: "access_token" })
 @Controller('user')
 export class UserController {
@@ -98,8 +98,18 @@ export class UserController {
 
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @ApiQuery({
+    name: "sort", required: false, examples: {
+      example1: {
+        value: "createdAt-ASC"
+      },
+      example2: {
+        value: "createdAt-DESC"
+      },
+    }
+  })
+  findAll(@Query('sort') sort: any,) {
+    return this.userService.findAll(sort);
   }
 
   @Get(':id')

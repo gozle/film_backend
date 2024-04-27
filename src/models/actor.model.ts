@@ -5,9 +5,6 @@ import {
     PrimaryKey,
     AutoIncrement,
     DataType,
-    HasMany,
-    ForeignKey,
-    BelongsTo,
     BelongsToMany,
 } from 'sequelize-typescript';
 import { Video } from './video.model';
@@ -22,6 +19,9 @@ export class Actor extends Model {
 
     @Column(DataType.STRING)
     name: string;
+
+    @Column(DataType.STRING)
+    avatar: string;
 
     @BelongsToMany(() => Video, () => ActorVideo)
     videos: Video[]

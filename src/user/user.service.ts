@@ -149,8 +149,16 @@ export class UserService {
 
 
 
-  async findAll() {
-    const users = await User.findAll();
+  async findAll(sort: string) {
+
+    let s_by = 'createdAt';
+    let s = 'ASC'
+    if (sort) {
+      s_by = sort.split("-")[0];
+      s = sort.split("-")[1];
+    }
+
+    const users = await User.findAll({ order: [[`${s_by}`, `${s}`]] });
     return { users };
   }
 

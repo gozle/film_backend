@@ -8,9 +8,13 @@ import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { GiftModule } from './gift/gift.module';
 import { PremiumModule } from './premium/premium.module';
+import { CategoryModule } from './category/category.module';
+import { CountryModule } from './country/country.module';
+import { GenreModule } from './genre/genre.module';
+import { ActorModule } from './actor/actor.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, VideoModule, UserModule, AdminModule, GiftModule, PremiumModule],
+  imports: [DatabaseModule, AuthModule, VideoModule, UserModule, AdminModule, GiftModule, PremiumModule, CategoryModule, CountryModule, GenreModule, ActorModule],
   controllers: [AppController],
   providers: [AppService],
 })
