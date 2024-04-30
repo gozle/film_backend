@@ -34,7 +34,7 @@ export class ActorController {
   )
   create(@Body() createActorDto: CreateActorDto, @UploadedFiles() files: { avatar?: multer.File[] },) {
 
-    return this.actorService.create(createActorDto, files?.avatar[0]?.path);
+    return this.actorService.create(createActorDto, files);
   }
 
   @ApiQuery({ name: 'page', required: false })

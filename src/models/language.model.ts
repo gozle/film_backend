@@ -5,6 +5,7 @@ import {
     PrimaryKey,
     AutoIncrement,
     DataType,
+    Unique,
 } from 'sequelize-typescript';
 
 
@@ -22,8 +23,9 @@ export class Language extends Model {
     photo: string;
 
     @Column({ type: DataType.STRING, allowNull: false })
+    @Unique
     short_name: string;
 
 
-
+    HTTP
 }

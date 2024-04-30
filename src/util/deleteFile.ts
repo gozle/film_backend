@@ -1,15 +1,8 @@
-import * as fs from 'fs';
+export const deleteFile = (file: string) => {
 
-export const deleteFile = (file: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    if (fs.existsSync(file)) {
-      fs.unlink(file, (err) => {
-        if (err) {
-          return reject(err);
-        }
-      });
-    }
+  return fetch(`http://localhost:5000/delete?path=${file}`,
+    {
+      method: 'delete'
 
-    resolve();
-  });
+    },)
 };

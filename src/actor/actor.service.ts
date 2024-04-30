@@ -8,13 +8,17 @@ const pageLimit = 25;
 
 @Injectable()
 export class ActorService {
-  async create(data: CreateActorDto, file: string) {
+  async create(data: CreateActorDto, files) {
+
+    let fl = null;
+    if (files?.avatar) {
+      fl = files?.avatar[0].path;
+    }
 
     try {
       await Actor.create({
         name: data.name,
-        avatar: file
-
+        avatar: fl
       });
 
       return;
@@ -51,12 +55,22 @@ export class ActorService {
   async update(id: number, data: UpdateActorDto, files) {
     try {
 
+
+
       const actor = await Actor.findByPk(id);
+
+      console.log(actor)
+
       let fl = actor.avatar;
       if (files.avatar) {
-        deleteFile(fl);
+        if (fl) {
+          deleteFile(fl);
+        }
+
         fl = files.avatar[0].path;
       }
+      console.log(fl)
+
       actor.update({
         name: data.name,
         avatar: fl
@@ -70,9 +84,8 @@ export class ActorService {
 
   async remove(id: number) {
     try {
-
       const actor = await Actor.findByPk(id);
-      deleteFile(actor.avatar);
+      await deleteFile(actor.avatar);
       actor.destroy();
       return;
     } catch (err) {
