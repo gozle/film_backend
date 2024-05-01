@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { GenreService } from './genre.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('genre')
 @Controller('genre')
@@ -14,7 +14,7 @@ export class GenreController {
     schema: {
       type: 'object',
       properties: {
-        genre: {
+        name: {
           type: "string"
         }
       }
@@ -25,9 +25,12 @@ export class GenreController {
     return this.genreService.create(createGenreDto);
   }
 
+  @ApiQuery({ name: 'page', required: false })
   @Get()
-  findAll() {
-    return this.genreService.findAll();
+  findAll(
+    @Query('page') page: string
+  ) {
+    return this.genreService.findAll(page);
   }
 
   @Get(':id')

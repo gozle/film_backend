@@ -1,26 +1,82 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
+import { Genre } from 'src/models/genre.model';
+
+const pageLimit = 25;
+
 
 @Injectable()
 export class GenreService {
-  create(createGenreDto: CreateGenreDto) {
-    return 'This action adds a new genre';
+  async create(data: CreateGenreDto) {
+
+    try {
+      let genre = await Genre.findOne({ where: { name: data.name } });
+      if (genre) {
+        throw new ConflictException({ mes: 'Alreade exists' });
+      }
+      await Genre.create({ name: data.name });
+    }
+    catch (err) {
+      throw err;
+    }
+
   }
 
-  findAll() {
-    return `This action returns all genre`;
+  async findAll(page) {
+    try {
+
+      const pg = page || 1;
+      let genres = await Genre.findAll({
+        limit: pageLimit,
+        offset: (pg - 1) * pageLimit
+      });
+      return { genres }
+    } catch (err) {
+      throw err;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} genre`;
+  async findOne(id: number) {
+
+    try {
+
+      let genre = await Genre.findByPk(id);
+      return { genre }
+    } catch (err) {
+      throw err;
+    }
   }
 
-  update(id: number, updateGenreDto: UpdateGenreDto) {
-    return `This action updates a #${id} genre`;
+  async update(id: number, data: UpdateGenreDto) {
+
+    try {
+
+      let genre = await Genre.findByPk(id);
+
+      if (!genre) {
+        throw new BadRequestException();
+      }
+
+      await genre.update({
+        name: data.name
+      })
+
+
+    } catch (err) {
+      throw err;
+    }
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} genre`;
+  async remove(id: number) {
+    let genre = await Genre.findByPk(id);
+
+    if (!genre) {
+      throw new BadRequestException();
+    }
+
+    await genre.destroy();
+
   }
 }

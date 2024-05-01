@@ -6,6 +6,7 @@ import {
     AutoIncrement,
     DataType,
     BelongsToMany,
+    Unique,
 } from 'sequelize-typescript';
 
 import { Video } from './video.model';
@@ -19,7 +20,8 @@ export class Genre extends Model {
     @Column(DataType.BIGINT)
     id!: number;
 
-    @Column(DataType.STRING)
+    @Unique
+    @Column({ type: DataType.STRING, allowNull: false })
     name: string;
 
 

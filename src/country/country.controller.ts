@@ -1,29 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CountryService } from './country.service';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('country')
 @Controller('country')
 export class CountryController {
   constructor(private readonly countryService: CountryService) { }
 
-  @Post()
+
+  @ApiConsumes('application/json')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: "string"
+        }
+      }
+    }
+  })
+  @Post('add')
   create(@Body() createCountryDto: CreateCountryDto) {
     return this.countryService.create(createCountryDto);
   }
 
+  @ApiQuery({ name: 'page', required: false })
   @Get()
-  findAll() {
-    return this.countryService.findAll();
+  findAll(
+    @Query('page') page: string
+  ) {
+    return this.countryService.findAll(page);
   }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.countryService.findOne(+id);
   }
 
+  @ApiConsumes('application/json')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: "string"
+        }
+      }
+    }
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCountryDto: UpdateCountryDto) {
     return this.countryService.update(+id, updateCountryDto);

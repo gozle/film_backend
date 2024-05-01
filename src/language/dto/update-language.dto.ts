@@ -6,7 +6,7 @@ export class UpdateLanguageDto extends PartialType(CreateLanguageDto) {
     @IsAlphanumeric()
     name: string;
 
-    photo: string;
+    icon: string;
 
     @IsAlphanumeric()
     short_name: string;

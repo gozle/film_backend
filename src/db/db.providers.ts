@@ -16,6 +16,8 @@ import { Category } from 'src/models/category.model';
 import { PremiumPlan, } from 'src/models/premiumPlans.model';
 import { Admin } from 'src/models/admin.model';
 import { GiftCard } from 'src/models/giftCard.model';
+import { Language } from 'src/models/language.model';
+import { Translations } from 'src/models/translations.model';
 
 
 const config: IDatabaseConfigAttributes = dataBaseConfig.dev;
@@ -41,7 +43,8 @@ export const databaseProviders = [
         Category,
         Admin,
         GiftCard,
-        PremiumPlan
+        PremiumPlan,
+        Language, Translations
 
       ]);
       // await sequelize.sync({ force: true });

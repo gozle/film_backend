@@ -20,10 +20,10 @@ export class Language extends Model {
     name: string;
 
     @Column(DataType.TEXT)
-    photo: string;
+    icon: string;
 
-    @Column({ type: DataType.STRING, allowNull: false })
     @Unique
+    @Column({ type: DataType.STRING, allowNull: false })
     short_name: string;
 
 

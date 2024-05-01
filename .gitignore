@@ -2,3 +2,5 @@
 /uploads
 /dist
 .env
+/scripts/delete_file/node_modules
+/scripts/delete_file/.env

@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query } from '@nestjs/common';
 import { LanguageService } from './language.service';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { UpdateLanguageDto } from './dto/update-language.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { MulterAvatarOptions } from 'src/util/avatar.multer.options';
 import * as multer from 'multer'
@@ -20,6 +20,9 @@ export class LanguageController {
         name: {
           type: "string"
         },
+        short_name: {
+          type: "string"
+        },
         icon: {
           type: 'file'
         }
@@ -35,9 +38,12 @@ export class LanguageController {
     return this.languageService.create(createLanguageDto, files);
   }
 
+  @ApiQuery({ name: 'page', required: false })
   @Get()
-  findAll() {
-    return this.languageService.findAll();
+  findAll(
+    @Query('page') page: string
+  ) {
+    return this.languageService.findAll(+page);
   }
 
   @Get(':id')
@@ -45,9 +51,29 @@ export class LanguageController {
     return this.languageService.findOne(+id);
   }
 
+  @ApiConsumes('applications/json')
+  @ApiBody({
+    schema: {
+      type: 'onject',
+      properties: {
+        name: {
+          type: "string"
+        },
+        short_name: {
+          type: "string"
+        },
+        icon: {
+          type: 'file'
+        }
+      }
+    }
+  })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLanguageDto: UpdateLanguageDto) {
-    return this.languageService.update(+id, updateLanguageDto);
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'icon', maxCount: 1 }], MulterAvatarOptions),
+  )
+  update(@Param('id') id: string, @Body() updateLanguageDto: UpdateLanguageDto, @UploadedFiles() files: { icon?: multer.File[] }) {
+    return this.languageService.update(+id, updateLanguageDto, files);
   }
 
   @Delete(':id')

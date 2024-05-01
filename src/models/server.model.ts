@@ -5,25 +5,36 @@ import {
     PrimaryKey,
     AutoIncrement,
     DataType,
-    BelongsToMany,
-    Unique,
+    HasMany,
 } from 'sequelize-typescript';
 import { Video } from './video.model';
-import { CountryVideo } from './coutryVideo.model';
+import { Actor } from './actor.model';
+import { Language } from './language.model';
+
 
 @Table
-export class Country extends Model {
+export class Rating extends Model {
 
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.BIGINT)
     id!: number;
 
-    @Unique
+
     @Column({ type: DataType.STRING, allowNull: false })
     name: string;
 
-    @BelongsToMany(() => Video, () => CountryVideo)
+    @Column({ type: DataType.STRING, allowNull: false })
+    url: string;
+
+
+    @HasMany(() => Video)
     videos: Video[]
+
+    @HasMany(() => Actor)
+    actors: Actor[]
+
+    @HasMany(() => Language)
+    languages: Language[]
 
 }
