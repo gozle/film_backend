@@ -6,7 +6,7 @@ import { ApiBody, ApiConsumes, ApiHeader, ApiQuery, ApiTags } from '@nestjs/swag
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @ApiTags('category')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiHeader({ name: "access_token" })
 @Controller('category')
 export class CategoryController {

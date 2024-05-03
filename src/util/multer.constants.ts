@@ -8,5 +8,7 @@ export const MIME_TIPES_PHOTO = [
 
 export const MIME_TIPES_VIDEO = [
 
+    ''
+
 ];
 

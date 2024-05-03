@@ -14,7 +14,7 @@ const URL = process.env.URL || 'localhost';
 
 
 const config = new DocumentBuilder()
-  .setTitle('G_Film Admin API')
+  .setTitle('Pi_Film Admin API')
   .setDescription('Api for administration')
   .setVersion('1.0')
   .addServer('http://localhost:8000')

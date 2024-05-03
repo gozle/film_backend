@@ -6,21 +6,15 @@ import {
     AutoIncrement,
     DataType,
     HasMany,
-    BelongsToMany,
     BelongsTo,
     ForeignKey,
 } from 'sequelize-typescript';
 
 import { Subtitle } from './subtitle.model';
 import { Sound } from './sound.model';
-import { Genre } from './genre.model';
-import { GenreVideo } from './genreVideo.model';
-import { ActorVideo } from './actorVideo.model';
-import { Actor } from './actor.model';
-import { Country } from './country.model';
-import { CountryVideo } from './coutryVideo.model';
 import { Rating } from './rating.model';
-import { Category } from './category.model';
+import { Metadata } from './metadata.mode';
+
 
 @Table
 export class Video extends Model {
@@ -42,7 +36,7 @@ export class Video extends Model {
     @Column(DataType.FLOAT)
     duration: number;
 
-    @Column(DataType.DATE)
+    @Column({ type: DataType.DATEONLY, allowNull: false })
     releaseDate: string;
 
     @Column({
@@ -67,26 +61,14 @@ export class Video extends Model {
     @HasMany(() => Subtitle)
     subtitles: Subtitle[];
 
-    @BelongsToMany(() => Genre, () => GenreVideo)
-    genres: Genre[]
-
-    @BelongsToMany(() => Actor, () => ActorVideo)
-    actors: Actor[]
-
-    @BelongsToMany(() => Country, () => CountryVideo)
-    countries: Video[]
-
     @HasMany(() => Rating)
     ratings: Rating[];
 
-    @BelongsTo(() => Category)
-    category: Category;
+    @BelongsTo(() => Metadata)
+    metaData: Metadata;
 
-    @ForeignKey(() => Category)
+    @ForeignKey(() => Metadata)
     @Column({ type: DataType.BIGINT })
-    categoryId: number;
-
-    @Column(DataType.BOOLEAN)
-    premium: boolean
+    metaDataId: number;
 
 }

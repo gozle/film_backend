@@ -7,8 +7,8 @@ import {
     DataType,
     BelongsToMany,
 } from 'sequelize-typescript';
-import { Video } from './video.model';
 import { ActorVideo } from './actorVideo.model';
+import { Metadata } from './metadata.mode';
 
 @Table
 export class Actor extends Model {
@@ -23,7 +23,7 @@ export class Actor extends Model {
     @Column(DataType.STRING)
     avatar: string;
 
-    @BelongsToMany(() => Video, () => ActorVideo)
-    videos: Video[]
+    @BelongsToMany(() => Metadata, () => ActorVideo)
+    metadata: Metadata[]
 
 }

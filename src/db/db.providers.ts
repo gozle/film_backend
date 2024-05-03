@@ -10,7 +10,7 @@ import { GenreVideo } from 'src/models/genreVideo.model';
 import { Actor } from 'src/models/actor.model';
 import { ActorVideo } from 'src/models/actorVideo.model';
 import { Country } from 'src/models/country.model';
-import { CountryVideo } from 'src/models/coutryVideo.model';
+import { CountryVideo } from 'src/models/countryVideo.model';
 import { Rating } from 'src/models/rating.model';
 import { Category } from 'src/models/category.model';
 import { PremiumPlan, } from 'src/models/premiumPlans.model';
@@ -18,6 +18,7 @@ import { Admin } from 'src/models/admin.model';
 import { GiftCard } from 'src/models/giftCard.model';
 import { Language } from 'src/models/language.model';
 import { Translations } from 'src/models/translations.model';
+import { Metadata } from 'src/models/metadata.mode';
 
 
 const config: IDatabaseConfigAttributes = dataBaseConfig.dev;
@@ -44,7 +45,9 @@ export const databaseProviders = [
         Admin,
         GiftCard,
         PremiumPlan,
-        Language, Translations
+        Metadata,
+        Language, Translations,
+
 
       ]);
       // await sequelize.sync({ force: true });

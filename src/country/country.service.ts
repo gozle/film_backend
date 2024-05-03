@@ -1,16 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from 'src/models/country.model';
 import { Translations } from 'src/models/translations.model';
+import { where } from 'sequelize';
 
 let pageLimit = 25;
 
 @Injectable()
 export class CountryService {
-  create(data: CreateCountryDto) {
+  async create(data: CreateCountryDto) {
 
+    let country = await Country.findOne({ where: { name: data.name } });
 
+    if (country) {
+      throw new ConflictException();
+    }
+
+    await Country.create({
+      name: data.name
+    })
 
   }
 
@@ -32,13 +41,23 @@ export class CountryService {
     return `This action returns a #${id} country`;
   }
 
-  update(id: number, updateCountryDto: UpdateCountryDto) {
-    return `This action updates a #${id} country`;
+  async update(id: number, data: UpdateCountryDto) {
+
+    let country = await Country.findByPk(id);
+
+    if (!country) {
+      throw new NotFoundException();
+    }
+
+    await country.update({
+      name: data.name
+    })
   }
 
   async remove(id: number) {
     let country = await Country.findByPk(id)
     let translations = await Translations.findAll({ where: { object_id: id, object_type: 'country' } })
+    translations.map(async tr => await tr.destroy())
     country.destroy();
   }
 }

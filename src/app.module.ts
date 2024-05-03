@@ -13,10 +13,10 @@ import { CountryModule } from './country/country.module';
 import { GenreModule } from './genre/genre.module';
 import { ActorModule } from './actor/actor.module';
 import { LanguageModule } from './language/language.module';
-import { ServersModule } from './servers/servers.module';
+
 
 @Module({
-  imports: [DatabaseModule, AuthModule, VideoModule, UserModule, AdminModule, GiftModule, PremiumModule, CategoryModule, CountryModule, GenreModule, ActorModule, LanguageModule, ServersModule],
+  imports: [DatabaseModule, AuthModule, VideoModule, UserModule, AdminModule, GiftModule, PremiumModule, CategoryModule, CountryModule, GenreModule, ActorModule, LanguageModule],
   controllers: [AppController],
   providers: [AppService],
 })

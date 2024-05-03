@@ -10,6 +10,7 @@ import {
 
 } from 'sequelize-typescript';
 import { Video } from './video.model';
+import { Metadata } from './metadata.mode';
 
 @Table
 export class Category extends Model {
@@ -24,7 +25,7 @@ export class Category extends Model {
     @Column(DataType.BIGINT)
     parentId: number;
 
-    @HasMany(() => Video)
-    metaDatas: Video[]
+    @HasMany(() => Metadata)
+    metaDatas: Metadata[]
 
 }

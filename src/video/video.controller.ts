@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, BadRequestException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, BadRequestException, UseGuards, UploadedFiles } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
@@ -6,18 +6,19 @@ import { ApiBody, ApiConsumes, ApiHeader, ApiOperation, ApiResponse, ApiTags } f
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import multer, { diskStorage } from 'multer';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import * as CONSTANTS from './video.constants'
 
 
 const multerOptions: {} = {
   storage: diskStorage({
-    destination: 'uploads/avatars',
+    destination: 'uploads/videos',
     filename: (req, file, cb) => {
       const filename = `${Date.now()}_${file.originalname}`;
       cb(null, filename);
     },
   }),
   fileFilter: (req, file, cb) => {
-    const allowedMimes = [];
+    const allowedMimes = CONSTANTS.MIME_TIPES;
     if (allowedMimes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -28,15 +29,16 @@ const multerOptions: {} = {
 
 
 @ApiTags('video')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @ApiHeader({ name: "access_token" })
 @Controller('video')
 export class VideoController {
   constructor(private readonly videoService: VideoService) { }
+
   @ApiOperation({
     summary: 'Video upload',
     description:
-      'video upload',
+      'After successfully upload it gives video Id for adding metadata',
   })
   @ApiResponse({
     status: 201,
@@ -44,111 +46,14 @@ export class VideoController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
 
-        video_path: {
-          type: "file"
-        },
-      },
-    },
-  })
-  @Post()
+  @Post('upload')
   @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }], multerOptions),
+    FileFieldsInterceptor([{ name: 'thumbnail', maxCount: 1 }, { name: 'video', maxCount: 1 }], multerOptions),
   )
-  uploadVideo(@Body() createVideoDto: CreateVideoDto) {
-    return this.videoService.create(createVideoDto);
-  }
-
-
-
-
-  @ApiOperation({
-    summary: 'Video upload',
-    description:
-      'video upload',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'The record has been successfully created.',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-
-        title: {
-          type: "string"
-        },
-
-        description: {
-          type: "string"
-        },
-
-        thumbnail: {
-          type: "file"
-        },
-
-        video_path: {
-          type: "file"
-        },
-
-        age_restriction: {
-          type: "integer"
-        },
-
-        actors: {
-          type: 'array'
-        },
-
-        genres: {
-          type: 'array'
-        },
-
-        countries: {
-          type: 'array'
-        },
-
-        premium: {
-          type: 'boolean'
-        },
-
-        categoryId: {
-          type: "integer"
-        },
-
-        episode: {
-          type: "integer"
-        },
-
-        season: {
-          type: "integer"
-        },
-
-        releaseDate: {
-          type: "string",
-          format: "date"
-
-        }
-
-
-
-
-
-      },
-    },
-  })
-  @Post()
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }], multerOptions),
-  )
-  create(@Body() createVideoDto: CreateVideoDto) {
-    return this.videoService.create(createVideoDto);
+  create(@Body() createVideoDto: CreateVideoDto,
+    @UploadedFiles() files: { thumbnail?: multer.File[], video?: multer.File[] },) {
+    return this.videoService.create(createVideoDto, files);
   }
 
 

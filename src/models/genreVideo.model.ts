@@ -10,6 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { Video } from './video.model';
 import { Genre } from './genre.model';
+import { Metadata } from './metadata.mode';
 
 @Table
 export class GenreVideo extends Model {
@@ -18,12 +19,12 @@ export class GenreVideo extends Model {
     @Column(DataType.BIGINT)
     id!: number;
 
-    @ForeignKey(() => Video)
+    @ForeignKey(() => Metadata)
     @Column({
         type: DataType.BIGINT,
         allowNull: false,
     })
-    videoId: number;
+    metaDataId: number;
 
     @ForeignKey(() => Genre)
     @Column({

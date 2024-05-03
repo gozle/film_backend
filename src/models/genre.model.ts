@@ -8,9 +8,8 @@ import {
     BelongsToMany,
     Unique,
 } from 'sequelize-typescript';
-
-import { Video } from './video.model';
 import { GenreVideo } from './genreVideo.model';
+import { Metadata } from './metadata.mode';
 
 
 @Table
@@ -25,7 +24,7 @@ export class Genre extends Model {
     name: string;
 
 
-    @BelongsToMany(() => Video, () => GenreVideo)
-    videos: Video[]
+    @BelongsToMany(() => Metadata, () => GenreVideo)
+    metadata: Metadata[]
 
 }
