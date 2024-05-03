@@ -1,4 +1,4 @@
-export const deleteFile = (file: string) => {
+export const deleteStorageFile = (file: string) => {
 
   return fetch(`http://localhost:5000/delete?path=${file}`,
     {

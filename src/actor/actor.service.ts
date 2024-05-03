@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateActorDto } from './dto/create-actor.dto';
 import { UpdateActorDto } from './dto/update-actor.dto';
 import { Actor } from 'src/models/actor.model';
-import { deleteFile } from 'src/util/deleteFile';
+import { deleteStorageFile } from 'src/util/deleteFile';
 
 const pageLimit = 25;
 
@@ -64,7 +64,7 @@ export class ActorService {
       let fl = actor.avatar;
       if (files.avatar) {
         if (fl) {
-          deleteFile(fl);
+          deleteStorageFile(fl);
         }
 
         fl = files.avatar[0].path;
@@ -85,7 +85,7 @@ export class ActorService {
   async remove(id: number) {
     try {
       const actor = await Actor.findByPk(id);
-      await deleteFile(actor.avatar);
+      await deleteStorageFile(actor.avatar);
       actor.destroy();
       return;
     } catch (err) {

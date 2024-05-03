@@ -1,10 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { Video } from '../models/video.model'
 import { Metadata } from 'src/models/metadata.mode';
 import { ClientProxy } from '@nestjs/microservices';
 import { getVideoDuration } from 'src/util/get-video-duration';
+import { CreateMetaDataDto } from './dto/create-metadata.dto';
+import { ActorVideo } from 'src/models/actorVideo.model';
+import { GenreVideo } from 'src/models/genreVideo.model';
+import { CountryVideo } from 'src/models/countryVideo.model';
 
 
 @Injectable()
@@ -71,7 +75,55 @@ export class VideoService {
 
   }
 
-  uploadVide(file) {
+
+
+  async createMetadata(id: number, data: CreateMetaDataDto, file) {
+
+    const video = await Video.findByPk(id);
+    let fl = file.photo[0].path;
+    if (!video) {
+
+      throw new NotFoundException();
+    }
+    if (video.metaDataId) {
+      throw new ForbiddenException();
+    }
+
+
+    const metaData = await Metadata.create({
+      title: data.title,
+      description: data.description,
+      photo: fl,
+      age_restriction: data.age_restriction,
+      premium: data.premium,
+      categoryId: data.categoryId
+    });
+
+    await video.update({ metaDataId: metaData.id })
+
+    let actors = [];
+
+    for (let i of data.actorId) {
+      actors.push({ metaDataId: metaData.id, actorId: i })
+    }
+    await ActorVideo.bulkCreate(actors);
+
+    let genres = [];
+
+    for (let i of data.genreId) {
+      genres.push({ metaDataId: metaData.id, genreId: i })
+    }
+    await GenreVideo.bulkCreate(genres);
+
+
+    let countries = [];
+
+    for (let i of data.countryId) {
+      countries.push({ metaDataId: metaData.id, countryId: i })
+    }
+    await CountryVideo.bulkCreate(countries);
+
+    return;
 
   }
 

@@ -7,6 +7,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import multer, { diskStorage } from 'multer';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import * as CONSTANTS from './video.constants'
+import { CreateMetaDataDto } from './dto/create-metadata.dto';
 
 
 const multerOptions: {} = {
@@ -54,6 +55,19 @@ export class VideoController {
   create(@Body() createVideoDto: CreateVideoDto,
     @UploadedFiles() files: { thumbnail?: multer.File[], video?: multer.File[] },) {
     return this.videoService.create(createVideoDto, files);
+  }
+
+
+  @Post('upload-metadata/:videoId')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }], multerOptions),
+  )
+  createMetadata(@Body() createMetadataDto: CreateMetaDataDto,
+    @UploadedFiles() files: { thumbnail?: multer.File[], video?: multer.File[] },
+    @Param('videoId') id: string
+  ) {
+    return this.videoService.createMetadata(+id, createMetadataDto, files);
   }
 
 

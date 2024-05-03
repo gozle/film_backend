@@ -3,7 +3,7 @@ import { CreateLanguageDto } from './dto/create-language.dto';
 import { UpdateLanguageDto } from './dto/update-language.dto';
 import { Language } from 'src/models/language.model';
 import { where } from 'sequelize';
-import { deleteFile } from 'src/util/deleteFile';
+import { deleteStorageFile } from 'src/util/deleteFile';
 
 let pageLimit = 25;
 
@@ -22,7 +22,7 @@ export class LanguageService {
 
       if (language) {
         if (fl) {
-          deleteFile(fl);
+          deleteStorageFile(fl);
         }
         throw new ConflictException();
       }
@@ -77,7 +77,7 @@ export class LanguageService {
 
       let fl: string = language.icon;
       if (files?.icon) {
-        await deleteFile(fl);
+        await deleteStorageFile(fl);
         fl = files?.icon[0].path;
       }
 
@@ -104,7 +104,7 @@ export class LanguageService {
         throw new BadRequestException();
       }
 
-      await deleteFile(language.icon);
+      await deleteStorageFile(language.icon);
       await language.destroy();
 
     }

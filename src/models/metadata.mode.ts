@@ -36,7 +36,7 @@ export class Metadata extends Model {
     description: string;
 
     @Column(DataType.STRING)
-    thumbnail: string;
+    photo: string;
 
     @Unique
     @Column(DataType.STRING)
