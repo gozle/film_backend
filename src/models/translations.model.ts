@@ -22,8 +22,14 @@ export class Translations extends Model {
     @Column(DataType.STRING)
     object_type: string;
 
+    @Column(DataType.STRING)
+    title: string;
+
     @Column(DataType.TEXT)
     text: string;
+
+    @Column(DataType.STRING)
+    path: string;
 
     @Column(DataType.STRING)
     object_id: string;

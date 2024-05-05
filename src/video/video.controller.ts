@@ -10,6 +10,7 @@ import * as CONSTANTS from './video.constants'
 import { CreateMetaDataDto } from './dto/create-metadata.dto';
 
 
+
 const multerOptions: {} = {
   storage: diskStorage({
     destination: 'uploads/videos',
@@ -36,6 +37,19 @@ const multerOptions: {} = {
 export class VideoController {
   constructor(private readonly videoService: VideoService) { }
 
+
+  @Post('movie')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }], multerOptions),
+  )
+  createMetadata(@Body() createMetadataDto: CreateMetaDataDto,
+    @UploadedFiles() files: { thumbnail?: multer.File[], video?: multer.File[] },
+
+  ) {
+    return this.videoService.createMetadata(createMetadataDto, files);
+  }
+
   @ApiOperation({
     summary: 'Video upload',
     description:
@@ -48,33 +62,21 @@ export class VideoController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiConsumes('multipart/form-data')
 
-  @Post('upload')
+
+  @Post('upload/:movieId')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'thumbnail', maxCount: 1 }, { name: 'video', maxCount: 1 }], multerOptions),
   )
   create(@Body() createVideoDto: CreateVideoDto,
+    @Param('movieId') id: string,
     @UploadedFiles() files: { thumbnail?: multer.File[], video?: multer.File[] },) {
-    return this.videoService.create(createVideoDto, files);
+    return this.videoService.create(+id, createVideoDto, files);
   }
-
-
-  @Post('upload-metadata/:videoId')
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: 'photo', maxCount: 1 }], multerOptions),
-  )
-  createMetadata(@Body() createMetadataDto: CreateMetaDataDto,
-    @UploadedFiles() files: { thumbnail?: multer.File[], video?: multer.File[] },
-    @Param('videoId') id: string
-  ) {
-    return this.videoService.createMetadata(+id, createMetadataDto, files);
-  }
-
-
 
 
   @Get()
   findAll() {
+
     return this.videoService.findAll();
   }
 

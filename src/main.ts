@@ -27,6 +27,8 @@ const config = new DocumentBuilder()
 async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  await app.setGlobalPrefix("api");
+
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   const document = SwaggerModule.createDocument(app, config);
   app.useGlobalPipes(new ValidationPipe());

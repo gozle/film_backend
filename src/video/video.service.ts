@@ -9,13 +9,17 @@ import { CreateMetaDataDto } from './dto/create-metadata.dto';
 import { ActorVideo } from 'src/models/actorVideo.model';
 import { GenreVideo } from 'src/models/genreVideo.model';
 import { CountryVideo } from 'src/models/countryVideo.model';
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
+
+
 
 
 @Injectable()
 export class VideoService {
 
   constructor(
-    @Inject('VIDEO_SERVICE') private rabbitClient: ClientProxy
+
+    private readonly rabbitmqService: RabbitMQService
   ) { }
 
 
@@ -47,47 +51,53 @@ export class VideoService {
   // }
 
 
-  async create(data: CreateVideoDto, files) {
+  async create(id: number, data: CreateVideoDto, files) {
 
-    console.log(files);
+    try {
 
-    let vd_path = files.video[0].path;
-    let thumbnail_path = files.thumbnail[0].path;
 
-    let duration = await getVideoDuration(vd_path);
+      console.log(files);
 
-    let season = data.season || null;
-    let episode = data.episode || null;
+      let vd_path = files.video[0].path;
+      let thumbnail_path = files.thumbnail[0].path;
 
-    const video = await Video.create({
-      video_path: vd_path,
-      thumbnail: thumbnail_path,
-      releaseDate: data.releaseDate,
-      season: season,
-      episode: episode,
-      duration: duration,
-      status: 'upload',
-    });
+      let duration = await getVideoDuration(vd_path);
 
-    // this.rabbitClient.emit('video', data)
+      let season = data.season || null;
+      let episode = data.episode || null;
 
-    return { videoId: video.id };
+      console.log(id)
+
+      const metaData = await Metadata.findByPk(id);
+
+
+      const video = await Video.create({
+        video_path: vd_path,
+        thumbnail: thumbnail_path,
+        releaseDate: data.releaseDate,
+        season: season,
+        episode: episode,
+        duration: duration,
+        metaDataId: metaData.id,
+        status: 'upload',
+      });
+
+      await this.rabbitmqService.publishMessage(vd_path);
+
+      return { videoId: video.id };
+    } catch (err) {
+
+      throw err;
+    }
 
   }
 
 
 
-  async createMetadata(id: number, data: CreateMetaDataDto, file) {
+  async createMetadata(data: CreateMetaDataDto, file) {
 
-    const video = await Video.findByPk(id);
+
     let fl = file.photo[0].path;
-    if (!video) {
-
-      throw new NotFoundException();
-    }
-    if (video.metaDataId) {
-      throw new ForbiddenException();
-    }
 
 
     const metaData = await Metadata.create({
@@ -99,31 +109,27 @@ export class VideoService {
       categoryId: data.categoryId
     });
 
-    await video.update({ metaDataId: metaData.id })
 
     let actors = [];
-
     for (let i of data.actorId) {
       actors.push({ metaDataId: metaData.id, actorId: i })
     }
+
     await ActorVideo.bulkCreate(actors);
 
     let genres = [];
-
     for (let i of data.genreId) {
       genres.push({ metaDataId: metaData.id, genreId: i })
     }
     await GenreVideo.bulkCreate(genres);
 
-
     let countries = [];
-
     for (let i of data.countryId) {
       countries.push({ metaDataId: metaData.id, countryId: i })
     }
     await CountryVideo.bulkCreate(countries);
 
-    return;
+    return metaData.id;
 
   }
 
