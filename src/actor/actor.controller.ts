@@ -13,21 +13,6 @@ export class ActorController {
   constructor(private readonly actorService: ActorService) { }
 
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        name: {
-          type: "string"
-        },
-        avatar: {
-          type: 'file',
-
-        },
-
-      }
-    }
-  })
   @Post('add')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }], MulterAvatarOptions),

@@ -23,7 +23,7 @@ export class Translations extends Model {
     object_type: string;
 
     @Column(DataType.STRING)
-    title: string;
+    name: string;
 
     @Column(DataType.TEXT)
     text: string;

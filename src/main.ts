@@ -17,9 +17,9 @@ const config = new DocumentBuilder()
   .setTitle('Pi_Film Admin API')
   .setDescription('Api for administration')
   .setVersion('1.0')
+  .addServer(`${URL}:${PORT}`)
   .addServer('http://localhost:8000')
   .addServer(`${URL}`)
-  .addServer(`${URL}:${PORT}`)
   .build();
 
 

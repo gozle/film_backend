@@ -13,15 +13,6 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
   @ApiConsumes('application/json')
-  @ApiBody({
-    schema: {
-      type: "object",
-      properties: {
-        name: { type: "string" },
-        parentId: { type: "number" }
-      }
-    }
-  })
   @Post('add')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);

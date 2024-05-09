@@ -1,33 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, BadRequestException, UseGuards, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, BadRequestException, UseGuards, UploadedFiles, NotFoundException, Res } from '@nestjs/common';
 import { VideoService } from './video.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { ApiBody, ApiConsumes, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import multer, { diskStorage } from 'multer';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import * as CONSTANTS from './video.constants'
+
+
 import { CreateMetaDataDto } from './dto/create-metadata.dto';
+import { multerOptions } from 'src/util/multer.options.provider';
 
 
 
-const multerOptions: {} = {
-  storage: diskStorage({
-    destination: 'uploads/videos',
-    filename: (req, file, cb) => {
-      const filename = `${Date.now()}_${file.originalname}`;
-      cb(null, filename);
-    },
-  }),
-  fileFilter: (req, file, cb) => {
-    const allowedMimes = CONSTANTS.MIME_TIPES;
-    if (allowedMimes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new BadRequestException('Invalid file type'), false);
-    }
-  },
-};
+
+// const multerOptions: {} = {
+//   storage: diskStorage({
+//     destination: 'uploads/videos',
+//     filename: (req, file, cb) => {
+//       const filename = `${Date.now()}_${file.originalname}`;
+//       cb(null, filename);
+//     },
+//   }),
+//   fileFilter: (req, file, cb) => {
+//     const allowedMimes = CONSTANTS.MIME_TIPES;
+//     if (allowedMimes.includes(file.mimetype)) {
+//       cb(null, true);
+//     } else {
+//       cb(new BadRequestException('Invalid file type'), false);
+//     }
+//   },
+// };
 
 
 @ApiTags('video')
@@ -94,4 +96,6 @@ export class VideoController {
   remove(@Param('id') id: string) {
     return this.videoService.remove(+id);
   }
+
 }
+

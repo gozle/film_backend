@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateActorDto } from './dto/create-actor.dto';
 import { UpdateActorDto } from './dto/update-actor.dto';
 import { Actor } from 'src/models/actor.model';
 import { deleteStorageFile } from 'src/util/deleteFile';
+import { Language } from 'src/models/language.model';
+import { Translations } from 'src/models/translations.model';
 
 const pageLimit = 25;
 
@@ -16,10 +18,25 @@ export class ActorService {
     }
 
     try {
-      await Actor.create({
+      const actor = await Actor.create({
         name: data.name,
         avatar: fl
       });
+
+      const languages = await Language.findAll();
+
+      let bulkObkjects = [];
+
+      languages.map(lang => {
+        bulkObkjects.push({
+          name: data[`name_${lang.id}`],
+          object_type: "actor",
+          object_id: actor.id,
+          languageId: lang.id
+        })
+
+      })
+      await Translations.bulkCreate(bulkObkjects);
 
       return;
     } catch (err) {
@@ -41,8 +58,10 @@ export class ActorService {
     }
   }
 
+
   async findOne(id: number) {
     try {
+
 
       const actor = await Actor.findByPk(id);
       return actor;
@@ -54,27 +73,55 @@ export class ActorService {
 
   async update(id: number, data: UpdateActorDto, files) {
     try {
-
-
-
       const actor = await Actor.findByPk(id);
 
-      console.log(actor)
+      if (!actor) {
+        throw new NotFoundException({ mes: "Actor not found" });
+      }
 
       let fl = actor.avatar;
       if (files.avatar) {
         if (fl) {
           deleteStorageFile(fl);
         }
-
         fl = files.avatar[0].path;
       }
-      console.log(fl)
+
 
       actor.update({
         name: data.name,
         avatar: fl
       });
+
+
+      const languages = await Language.findAll();
+
+
+
+      languages.map(async lang => {
+
+        const langObject = await Translations.findOne({ where: { object_type: "actor", object_id: actor.id, languageId: lang.id } })
+
+        if (!langObject) {
+          await Translations.create({
+            name: data[`name_${lang.id}`],
+            object_type: "actor",
+            object_id: actor.id,
+            languageId: lang.id
+          });
+        } else {
+          await langObject.update({
+            name: data[`name_${lang.id}`],
+            object_type: "actor",
+            object_id: actor.id,
+            languageId: lang.id
+          })
+        }
+
+      })
+
+
+
 
       return;
     } catch (err) {
@@ -86,7 +133,8 @@ export class ActorService {
     try {
       const actor = await Actor.findByPk(id);
       await deleteStorageFile(actor.avatar);
-      actor.destroy();
+      await Translations.destroy({ where: { object_type: "actor", object_id: actor.id } });
+      await actor.destroy();
       return;
     } catch (err) {
       throw err

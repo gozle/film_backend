@@ -18,18 +18,35 @@ export class RabbitMQService {
 
   async publishMessage(message: any): Promise<void> {
     try {
-
       const connection = await amqp.connect(`amqp://${username}:${password}@${host}:${port}`);
       const channel = await connection.createChannel();
       await channel.assertQueue(queueName, { durable: false });
-      console.log(channel, message)
       channel.sendToQueue(queueName, Buffer.from(message));
-      console.log("Message sent to RabbitMQ:", message);
-      await channel.close();
-      await connection.close();
+      // await channel.close();
+      setTimeout(async () => {
+
+        connection.close();
+      }, 1000)
     } catch (error) {
       console.error("Error:", error);
     }
+  }
 
+  async getMessage(message: any): Promise<void> {
+    try {
+      const connection = await amqp.connect(`amqp://${username}:${password}@${host}:${port}`);
+      const channel = await connection.createChannel();
+      await channel.assertQueue(queueName, { durable: false });
+      channel.consume(queueName, msg => {
+        console.log(msg)
+      });
+
+      setTimeout(async () => {
+
+        connection.close();
+      }, 1000)
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 }

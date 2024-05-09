@@ -13,6 +13,7 @@ import { CountryModule } from './country/country.module';
 import { GenreModule } from './genre/genre.module';
 import { ActorModule } from './actor/actor.module';
 import { LanguageModule } from './language/language.module';
+import { CompressModule } from './compress/compress.module';
 
 
 
@@ -20,7 +21,7 @@ import { LanguageModule } from './language/language.module';
 
 
 @Module({
-  imports: [DatabaseModule, AuthModule, VideoModule, UserModule, AdminModule, GiftModule, PremiumModule, CategoryModule, CountryModule, GenreModule, ActorModule, LanguageModule],
+  imports: [DatabaseModule, AuthModule, VideoModule, UserModule, AdminModule, GiftModule, PremiumModule, CategoryModule, CountryModule, GenreModule, ActorModule, LanguageModule, CompressModule],
   controllers: [AppController],
   providers: [AppService],
 })

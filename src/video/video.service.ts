@@ -3,7 +3,7 @@ import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { Video } from '../models/video.model'
 import { Metadata } from 'src/models/metadata.mode';
-import { ClientProxy } from '@nestjs/microservices';
+
 import { getVideoDuration } from 'src/util/get-video-duration';
 import { CreateMetaDataDto } from './dto/create-metadata.dto';
 import { ActorVideo } from 'src/models/actorVideo.model';
@@ -22,33 +22,6 @@ export class VideoService {
     private readonly rabbitmqService: RabbitMQService
   ) { }
 
-
-  // [Object: null prototype] {
-  //   video: [
-  //     {
-  //       fieldname: 'video',
-  //       originalname: 'v2.mov',
-  //       encoding: '7bit',
-  //       mimetype: 'video/quicktime',
-  //       destination: 'uploads/videos',
-  //       filename: '1714744609688_v2.mov',
-  //       path: 'uploads/videos/1714744609688_v2.mov',
-  //       size: 2414412
-  //     }
-  //   ],
-  //   thumbnail: [
-  //     {
-  //       fieldname: 'thumbnail',
-  //       originalname: '2024-02-17-182016.jpg',
-  //       encoding: '7bit',
-  //       mimetype: 'image/jpeg',
-  //       destination: 'uploads/videos',
-  //       filename: '1714744609700_2024-02-17-182016.jpg',
-  //       path: 'uploads/videos/1714744609700_2024-02-17-182016.jpg',
-  //       size: 83873
-  //     }
-  //   ]
-  // }
 
 
   async create(id: number, data: CreateVideoDto, files) {
@@ -82,7 +55,20 @@ export class VideoService {
         status: 'upload',
       });
 
-      await this.rabbitmqService.publishMessage(vd_path);
+      const payload = {
+        path: thumbnail_path,
+        type: "photo",
+      }
+
+      await this.rabbitmqService.publishMessage(payload);
+
+      const payload1 = {
+        path: vd_path,
+        type: "video",
+      }
+
+      await this.rabbitmqService.publishMessage(payload1);
+
 
       return { videoId: video.id };
     } catch (err) {
